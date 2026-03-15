@@ -1,0 +1,37 @@
+pipeline {
+
+ agent any
+
+ tools {
+     maven 'Maven'
+ }
+
+ stages {
+
+  stage('Clone Repository') {
+   steps {
+    git branch: 'main', url: 'https://github.com/Gurupriya20/Project.git'
+   }
+  }
+
+  stage('Build') {
+   steps {
+    bat 'mvn clean package'
+   }
+  }
+
+  stage('Build Docker Image') {
+   steps {
+    bat 'docker build -t employeecrud .'
+   }
+  }
+
+  stage('Run Container') {
+   steps {
+    bat 'docker run -d -p 8080:8080 employeecrud'
+   }
+  }
+
+ }
+
+}
