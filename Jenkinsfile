@@ -1,37 +1,29 @@
 pipeline {
+    agent any
 
- agent any
+    tools {
+        maven 'Maven'
+    }
 
- tools {
-     maven 'Maven'
- }
+    stages {
 
- stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Gurupriya20/Project.git'
+            }
+        }
 
-  stage('Clone Repository') {
-   steps {
-    git branch: 'main', url: 'https://github.com/Gurupriya20/Project.git'
-   }
-  }
+        stage('Build Project') {
+            steps {
+                bat 'mvn clean package'
+            }
+        }
 
-  stage('Build') {
-   steps {
-    bat 'mvn clean package'
-   }
-  }
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
 
-  stage('Build Docker Image') {
-   steps {
-    bat 'docker build -t employeecrud .'
-   }
-  }
-
-  stage('Run Container') {
-   steps {
-    bat 'docker run -d -p 8080:8080 employeecrud'
-   }
-  }
-
- }
-
+    }
 }
